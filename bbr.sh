@@ -172,7 +172,7 @@ get_latest_version() {
     [ ${#latest_version[@]} -eq 0 ] && _error "Get latest kernel version failed."
     kernel_arr=()
     for i in ${latest_version[@]}; do
-        if _version_ge $i 5.13.4; then
+        if _version_ge $i 5.15.11; then
             kernel_arr+=($i);
         fi
     done
@@ -216,7 +216,7 @@ check_bbr_status() {
 
 check_kernel_version() {
     local kernel_version=$(uname -r | cut -d- -f1)
-    if _version_ge ${kernel_version} 5.13.4; then
+    if _version_ge ${kernel_version} 5.15.11; then
         return 0
     else
         return 1
