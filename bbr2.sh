@@ -1,3 +1,32 @@
+Skip to content
+Search or jump to…
+Pulls
+Issues
+Marketplace
+Explore
+ 
+@yakult13 
+yakult13
+/
+auto_bbr
+Public
+Code
+Issues
+Pull requests
+Actions
+Projects
+Wiki
+Security
+Insights
+Settings
+auto_bbr/bbr.sh
+@yakult13
+yakult13 Update bbr.sh
+Latest commit 531ccab on Dec 27, 2021
+ History
+ 1 contributor
+360 lines (324 sloc)  11.6 KB
+   
 #!/usr/bin/env bash
 #
 # Auto install latest kernel for TCP BBR
@@ -129,7 +158,7 @@ display_menu(){
     local pick
     local hint
     local vname
-    local prompt="which ${soft} you'd select ${default_prompt}: "
+ #   local prompt="which ${soft} you'd select ${default_prompt}: "
 
     while :
     do
@@ -141,21 +170,21 @@ display_menu(){
             echo -e "${green}${i}${plain}) $hint"
         done
         echo
-        read -p "${prompt}" pick
-        if [[ "$pick" == "" && "$default" != "" ]]; then
-            pick=${default}
-            break
-        fi
+#        read -p "${prompt}" pick
+#        if [[ "$pick" == "" && "$default" != "" ]]; then
+#            pick=${default}
+#            break
+#        fi
 
-        if ! _is_digit "$pick"; then
-            prompt="Input error, please input a number"
-            continue
-        fi
+#        if ! _is_digit "$pick"; then
+#            prompt="Input error, please input a number"
+#            continue
+#        fi
 
-        if [[ "$pick" -lt 1 || "$pick" -gt ${#arr[@]} ]]; then
-            prompt="Input error, please input a number between 1 and ${#arr[@]}: "
-            continue
-        fi
+#        if [[ "$pick" -lt 1 || "$pick" -gt ${#arr[@]} ]]; then
+ #           prompt="Input error, please input a number between 1 and ${#arr[@]}: "
+ #           continue
+ #       fi
 
         break
     done
@@ -172,7 +201,7 @@ get_latest_version() {
     [ ${#latest_version[@]} -eq 0 ] && _error "Get latest kernel version failed."
     kernel_arr=()
     for i in ${latest_version[@]}; do
-        if _version_ge $i 5.9; then
+        if _version_ge $i 5.15.11; then
             kernel_arr+=($i);
         fi
     done
@@ -195,15 +224,15 @@ get_latest_version() {
     [ -z "${deb_name}" ] && _error "Getting Linux kernel binary package name failed, maybe kernel build failed. Please choose other one and try again."
 }
 
-get_char() {
-    SAVEDSTTY=`stty -g`
-    stty -echo
-    stty cbreak
-    dd if=/dev/tty bs=1 count=1 2> /dev/null
-    stty -raw
-    stty echo
-    stty $SAVEDSTTY
-}
+#get_char() {
+#    SAVEDSTTY=`stty -g`
+#    stty -echo
+#    stty cbreak
+#    dd if=/dev/tty bs=1 count=1 2> /dev/null
+ #   stty -raw
+#    stty echo
+#    stty $SAVEDSTTY
+#}
 
 check_bbr_status() {
     local param=$(sysctl net.ipv4.tcp_congestion_control | awk '{print $3}')
@@ -216,7 +245,7 @@ check_bbr_status() {
 
 check_kernel_version() {
     local kernel_version=$(uname -r | cut -d- -f1)
-    if _version_ge ${kernel_version} 4.9; then
+    if _version_ge ${kernel_version} 5.15.11; then
         return 0
     else
         return 1
@@ -309,17 +338,17 @@ install_kernel() {
     esac
 }
 
-reboot_os() {
-    echo
-    _info "The system needs to reboot."
-    read -p "Do you want to restart system? [y/n]" is_reboot
-    if [[ ${is_reboot} == "y" || ${is_reboot} == "Y" ]]; then
-        reboot
-    else
-        _info "Reboot has been canceled..."
-        exit 0
-    fi
-}
+#reboot_os() {
+#    echo
+#    _info "The system needs to reboot."
+#    read -p "Do you want to restart system? [y/n]" is_reboot
+#    if [[ ${is_reboot} == "y" || ${is_reboot} == "Y" ]]; then
+#        reboot
+#    else
+#        _info "Reboot has been canceled..."
+#        exit 0
+#    fi
+#}
 
 install_bbr() {
     if check_bbr_status; then
@@ -337,7 +366,7 @@ install_bbr() {
     check_os
     install_kernel
     sysctl_config
-    reboot_os
+#    reboot_os
 }
 
 [[ $EUID -ne 0 ]] && _error "This script must be run as root"
@@ -354,10 +383,20 @@ echo " Kernel  : $kern"
 echo "----------------------------------------"
 echo " Automatically enable TCP BBR script"
 echo
-echo " URL: https://teddysun.com/489.html"
-echo "----------------------------------------"
-echo
-echo "Press any key to start...or Press Ctrl+C to cancel"
-char=$(get_char)
+
+#char=$(get_char)
 
 install_bbr 2>&1 | tee ${cur_dir}/install_bbr.log
+© 2022 GitHub, Inc.
+Terms
+Privacy
+Security
+Status
+Docs
+Contact GitHub
+Pricing
+API
+Training
+Blog
+About
+Loading complete
