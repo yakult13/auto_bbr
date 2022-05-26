@@ -216,7 +216,7 @@ check_bbr_status() {
 
 check_kernel_version() {
     local kernel_version=$(uname -r | cut -d- -f1)
-    if _version_ge ${kernel_version} 5.4; then
+    if _version_ge ${kernel_version} 4.9; then
         return 0
     else
         return 1
